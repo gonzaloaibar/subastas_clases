@@ -46,33 +46,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
         ]
 
 
-    def create(self, validated_data):
-        #obtengo la lista de categorias existentes serializada y verfificada
-        categorias_data = validated_data.pop('categorias', [])
 
-        #obtengo el usuario asociado al anuncio desde la vista
-        user = validated_data.pop('publicado_por', None)
-        #si la vista no me lo envia lo obtengo desde el request (caso improbable)
-        if user is None:
-            user = self.context['request'].user
-
-        #creo el anuncio con toda la informacion verificada y el usuario
-        anuncio = Anuncio.objects.create(publicado_por=user, **validated_data)
-
-        #lista vacia para categorias nuevas
-        categorias_obj = []
-        #recorro la lista de categorias existentes
-        for categoria in categorias_data:
-            #get_or_create me devuelve una tupla (la categoria, True si se creo la categoria ,False caso contrario(osea ya existia))
-            categoria, creado = Categoria.objects.get_or_create(nombre=categoria['nombre'])
-            #agrego la categoria a la lista
-            categorias_obj.append(categoria)
-
-        #se agregan la lista de categorias al anuncio si no esta vacia
-        if categorias_obj:
-            anuncio.categorias.set(categorias_obj)
-
-        return anuncio
 
     #instance es el objeto actual a cambiar, validated_data contiene el json ya verificado para la modificacion del objeto actual
     def update(self, instance, validated_data):
