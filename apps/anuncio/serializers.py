@@ -11,13 +11,14 @@ class CategoriaSerializer(serializers.ModelSerializer):
         ]
 
 class AnuncioSerializer(serializers.ModelSerializer):
+    #obtengo la lista de categorias del anuncio
     categorias = serializers.ListField(
-        child=serializers.DictField(),
-        required=False,
-        write_only=True,
+        child=serializers.DictField(),#DictField me devuelve cada elemento {'nombre':'valor'}
+        required=False,#le indico que no es necesario en caso de PATCH
+        write_only=True,#indico que solo se usa para entradas PATCH/POST
     )
 
-    categorias_detalle = serializers.SerializerMethodField()
+    categorias_detalle = serializers.SerializerMethodField() #para salida, Rebuscado, llama al metodo get_categorias_detalle
 
     class Meta:
         model = Anuncio
@@ -37,6 +38,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['publicado_por', 'oferta_ganadora']
 
+    #recorre las categorias y las transforma a JSON
     def get_categorias_detalle(self, obj):
         return [
             {"id": cat.id, "nombre": cat.nombre}
@@ -59,9 +61,9 @@ class AnuncioSerializer(serializers.ModelSerializer):
 
         #lista vacia para categorias nuevas
         categorias_obj = []
-        #recorro la lista de categorias del anuncio
+        #recorro la lista de categorias existentes
         for categoria in categorias_data:
-            #get_or_create me devuelve una tupla (la categoria, True si se creo la categoria False caso contrario(osea ya existia))
+            #get_or_create me devuelve una tupla (la categoria, True si se creo la categoria ,False caso contrario(osea ya existia))
             categoria, creado = Categoria.objects.get_or_create(nombre=categoria['nombre'])
             #agrego la categoria a la lista
             categorias_obj.append(categoria)
