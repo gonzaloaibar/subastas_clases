@@ -45,8 +45,31 @@ class AnuncioSerializer(serializers.ModelSerializer):
             for cat in obj.categorias.all()
         ]
 
+    def create(self,validated_data):
+        #traigo la lista de categorias que existen
+        categorias_data = validated_data.pop('categorias',[])
 
+        usuario = validated_data.pop('publicado_por',None)
 
+        '''
+        if usuario is None:
+            usuario.self.context['request'].usuario
+        '''
+        #creo un anuncio
+        anuncio = Anuncio.objects.create(publicado_por=usuario,**validated_data)
+
+        lista_categorias = []
+
+        for categoria in categorias_data:
+
+            categoria ,creado = Categoria.objects.get_or_create(nombre=categoria['nombre'])
+
+            lista_categorias.append(categoria)
+
+        if lista_categorias:
+            anuncio.categorias.set(lista_categorias)
+
+        return anuncio
 
     #instance es el objeto actual a cambiar, validated_data contiene el json ya verificado para la modificacion del objeto actual
     def update(self, instance, validated_data):

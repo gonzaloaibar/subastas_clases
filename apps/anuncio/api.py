@@ -52,7 +52,8 @@ class AnuncioListaAPIView(APIView):
         serializer = AnuncioSerializer(data=request.data)
         if serializer.is_valid():
 
-            usuario=Usuario.objects.get(username='usuario1')
+            #ESTOY FORZANDO EL USO CON EL USUARIO ADMINISTRADOR SOLO PARA PRUEBAS
+            usuario=Usuario.objects.get(username='ceciga')
 
             serializer.save(publicado_por=usuario)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
