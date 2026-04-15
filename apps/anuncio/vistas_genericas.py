@@ -24,6 +24,10 @@ class AnuncioListaGenericView(ListCreateAPIView):
 
     '''este metodo hace que no necesite agregar un usaurio manualmente'''
     def perform_create(self, serializer):
-        print("Se está ejecutando perform_create")
         usuario = Usuario.objects.get(username='ceciga')
         serializer.save(publicado_por=usuario)
+
+#muestra,actualiza o destruye un anuncio
+class AnuncioDetalleGenericView(RetrieveUpdateDestroyAPIView):
+    queryset = Anuncio.objects.all()
+    serializer_class = AnuncioSerializer

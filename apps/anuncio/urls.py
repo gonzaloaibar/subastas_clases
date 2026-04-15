@@ -2,7 +2,7 @@ from apps.anuncio.api import CategoriaListaAPIView, CategoriaDetalleAPIView, Anu
 from apps.anuncio.api import AnuncioListaAPIView
 from django.urls import path
 
-from apps.anuncio.vistas_genericas import CategoriaListaGenericView, CategoriaDetalleGenericView, AnuncioListaGenericView
+from apps.anuncio.vistas_genericas import CategoriaListaGenericView, CategoriaDetalleGenericView, AnuncioListaGenericView , AnuncioDetalleGenericView
 
 app_name = 'anuncio'
 
@@ -13,5 +13,6 @@ urlpatterns = [
     path('api-view/anuncios/<pk>/', AnuncioDetalleAPIView.as_view()),
     path('generic-view/categoria/', CategoriaListaGenericView.as_view()), #archivo vista_generica
     path('generic-view/categoria/<int:pk>/', CategoriaDetalleGenericView.as_view()),##archivo vista_generica
-    path('generic-view/anuncios/',AnuncioListaGenericView.as_view())##archivo vista_generica
+    path('generic-view/anuncios/',AnuncioListaGenericView.as_view()),    ##archivo vista_generica
+    path('generic-view/anuncios/<int:pk>',AnuncioDetalleGenericView.as_view()), ##archivo vista_generica
 ]

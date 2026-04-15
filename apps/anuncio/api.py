@@ -35,9 +35,11 @@ class AnuncioViewSet(viewsets.ModelViewSet):
         horas = abs(anuncio.fecha_fin.hour - fecha_actual.hour)
         minutos = abs(anuncio.fecha_fin.minute - fecha_actual.minute)
 
-        return Response({"dias":dias,
-                         "horas":horas,
-                         "minutos":minutos})
+        return Response({   "anuncio":anuncio.titulo,
+                            "dias":dias,
+                            "horas":horas,
+                            "minutos":minutos,
+                             })
 
 
 
