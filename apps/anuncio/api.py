@@ -5,6 +5,13 @@ from rest_framework.views import APIView
 from apps.anuncio.models import Categoria, Anuncio
 from apps.usuario.models import Usuario #para forzar el usuario al agregar (POST) un nuevo anuncio
 from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer
+from rest_framework import viewsets
+#from rest_framework.viewsets import ModelViewSet
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+
 
 #vista para obtener las categorias y agregar una
 class CategoriaListaAPIView(APIView):

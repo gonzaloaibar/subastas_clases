@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from subastas_clase.router import router #tuve que importar router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.anuncio.urls', namespace='anuncio'))
+    path('', include('apps.anuncio.urls', namespace='anuncio')),
+    path('view-set/', include(router.urls)), #traje directamente lar urls del router
+    #path('view-set/', include('subastas_clase.router')),
 ]
