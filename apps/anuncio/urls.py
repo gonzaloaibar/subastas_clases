@@ -6,6 +6,8 @@ from django.urls import path
 from .api import CategoriaListaGenericView, CategoriaDetalleGenericView, AnuncioListGenericView, AnuncioDetalleGenericView
 
 
+from apps.anuncio.vistas_genericas import CategoriaListaGenericView, CategoriaDetalleGenericView, AnuncioListaGenericView , AnuncioDetalleGenericView
+
 app_name = 'anuncio'
 
 urlpatterns = [
@@ -13,9 +15,10 @@ urlpatterns = [
     path('api-view/categoria/<pk>/', CategoriaDetalleAPIView.as_view()),
     path('api-view/anuncios/', AnuncioListaAPIView.as_view()),
     path('api-view/anuncios/<pk>/', AnuncioDetalleAPIView.as_view()),
-
-    #urls vistas genericas para categoria y anuncio
-
     path('mixin-view/anuncios/', AnuncioListGenericView.as_view()),
     path('mixin-view/anuncios/<int:pk>/', AnuncioDetalleGenericView.as_view()),
+    path('generic-view/categoria/', CategoriaListaGenericView.as_view()), #archivo vista_generica
+    path('generic-view/categoria/<int:pk>/', CategoriaDetalleGenericView.as_view()),##archivo vista_generica
+    path('generic-view/anuncios/',AnuncioListaGenericView.as_view()),    ##archivo vista_generica
+    path('generic-view/anuncios/<int:pk>',AnuncioDetalleGenericView.as_view()), ##archivo vista_generica
 ]

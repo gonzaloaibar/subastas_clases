@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -10,8 +11,17 @@ from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import action
 from django.utils import timezone
+#from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from datetime import datetime #para usar fechas
 
-#vista para obtener las categorias y agregar una
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+
+
+#vista para obtener las categorias y agregar una categoria
 class CategoriaListaAPIView(APIView):
 
     def get(self, request, format=None):
@@ -164,7 +174,13 @@ class AnuncioViewSet(viewsets.ModelViewSet):
     #accion personalizada
     @action(methods=['get'], detail=True)
     def tiempo_restante(self, request, pk=None):
-        anuncio=self.get_object() #obtengo el anuncio
+        try:
+            anuncio = self.get_object()
+        except Http404:
+            return Response(
+                {"error": "El anuncio buscado no existe"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         #validar si el anuncio tiene fecha de fin
         if not anuncio.fecha_fin:

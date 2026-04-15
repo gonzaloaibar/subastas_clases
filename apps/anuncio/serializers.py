@@ -10,6 +10,7 @@ class CategoriaSerializer(serializers.ModelSerializer):
         'activa',
         ]
 
+
 class AnuncioSerializer(serializers.ModelSerializer):
     #obtengo la lista de categorias del anuncio
     categorias = serializers.ListField(
