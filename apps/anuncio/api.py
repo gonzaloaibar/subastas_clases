@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -7,13 +8,40 @@ from apps.usuario.models import Usuario #para forzar el usuario al agregar (POST
 from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer
 from rest_framework import viewsets
 #from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from datetime import datetime #para usar fechas
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
 
+class AnuncioViewSet(viewsets.ModelViewSet):
+    queryset = Anuncio.objects.all()
+    serializer_class = AnuncioSerializer
 
-#vista para obtener las categorias y agregar una
+    #Accion personalizada para obtener el tiempo restante para que finalice un anuncio
+    @action(detail=True) #Solo detail, porque impolicatamente es un metodo GET
+    def tiempo_restante_anuncio(self,request, pk=None):
+        try:
+            anuncio = self.get_object()
+        except Http404:
+            return Response(
+                {"error": "El anuncio buscado no existe"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        fecha_actual = datetime.now()
+
+        dias = anuncio.fecha_fin.day - fecha_actual.day
+        horas = abs(anuncio.fecha_fin.hour - fecha_actual.hour)
+        minutos = abs(anuncio.fecha_fin.minute - fecha_actual.minute)
+
+        return Response({"dias":dias,
+                         "horas":horas,
+                         "minutos":minutos})
+
+
+
+#vista para obtener las categorias y agregar una categoria
 class CategoriaListaAPIView(APIView):
 
     def get(self, request, format=None):
