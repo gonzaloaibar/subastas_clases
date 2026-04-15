@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.urls import path, include
+from .router import router
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.anuncio.urls', namespace='anuncio'))
+    path('', include('apps.anuncio.urls', namespace='anuncio')),
+    path('view-set/', include(router.urls)),
 ]
