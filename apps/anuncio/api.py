@@ -184,7 +184,8 @@ class AnuncioViewSet(viewsets.ModelViewSet):
 
         #validar si el anuncio tiene fecha de fin
         if not anuncio.fecha_fin:
-            return Response({"error":"este anuncio no tiene fecha de cierre"})
+            return Response({"error":"este anuncio no tiene fecha de cierre",
+                             "anuncio": anuncio.titulo,})
 
         #calculo el tiempo que falta
         hoy=timezone.now()
@@ -201,6 +202,7 @@ class AnuncioViewSet(viewsets.ModelViewSet):
         minutos=(segundos/3600) // 60
 
         return Response({
+            "anuncio": anuncio.titulo,
             "dias": dias,
             "horas": horas,
             "minutos": minutos
