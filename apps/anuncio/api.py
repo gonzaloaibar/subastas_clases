@@ -9,16 +9,9 @@ from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
-from rest_framework.decorators import action
 from django.utils import timezone
-#from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from datetime import datetime #para usar fechas
 
-
-class CategoriaViewSet(viewsets.ModelViewSet):
-    queryset = Categoria.objects.all()
-    serializer_class = CategoriaSerializer
 
 
 #vista para obtener las categorias y agregar una categoria
