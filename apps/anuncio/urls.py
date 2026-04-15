@@ -15,8 +15,7 @@ urlpatterns = [
     path('api-view/anuncios/<pk>/', AnuncioDetalleAPIView.as_view()),
 
     #urls vistas genericas para categoria y anuncio
-    path('generic-view/categoria/', CategoriaListaGenericView.as_view()),
-    path('generic-view/categoria/<int:pk>/', CategoriaDetalleGenericView.as_view()),
-    path('generic-view/anuncios/', AnuncioListGenericView.as_view()),
-    path('generic-view/anuncios/<int:pk>/', AnuncioDetalleGenericView.as_view()),
+
+    path('mixin-view/anuncios/', AnuncioListGenericView.as_view()),
+    path('mixin-view/anuncios/<int:pk>/', AnuncioDetalleGenericView.as_view()),
 ]
