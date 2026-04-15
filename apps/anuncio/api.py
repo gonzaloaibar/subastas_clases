@@ -168,7 +168,7 @@ class AnuncioViewSet(viewsets.ModelViewSet):
 
     #sobrescribo el metodo perform_create de ModelViewSet para forzar el usuario
     def perform_create(self, serializer):
-        user = Usuario.objects.get(id=2)
+        user = Usuario.objects.get(id=1)
         serializer.save(publicado_por=user)
 
     #accion personalizada
