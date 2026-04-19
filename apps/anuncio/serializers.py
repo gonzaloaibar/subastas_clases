@@ -52,10 +52,6 @@ class AnuncioSerializer(serializers.ModelSerializer):
 
         usuario = validated_data.pop('publicado_por',None)
 
-        '''
-        if usuario is None:
-            usuario.self.context['request'].usuario
-        '''
         #creo un anuncio
         anuncio = Anuncio.objects.create(publicado_por=usuario,**validated_data)
 

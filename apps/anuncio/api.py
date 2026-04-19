@@ -103,7 +103,7 @@ from rest_framework.generics import (
 get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 )
 
-#vistas concretas para categoria y vistas genericas para anuncio
+#vistas genericas para anuncio y categoria
 class CategoriaListaGenericView(ListCreateAPIView):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
@@ -112,41 +112,19 @@ class CategoriaDetalleGenericView(RetrieveUpdateDestroyAPIView):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
 
-class AnuncioListGenericView(mixins.ListModelMixin, mixins.CreateModelMixin, GenericAPIView):
+class AnuncioListaGenericView(ListCreateAPIView):
     queryset = Anuncio.objects.all()
     serializer_class = AnuncioSerializer
 
-    def get(self, request):
-        return self.list(request)
-
-    def post(self, request):
-        return self.create(request)
-
+    '''este metodo hace que no necesite agregar un usaurio manualmente'''
     def perform_create(self, serializer):
-        user = Usuario.objects.get(username='ceciga')
-        serializer.save(publicado_por=user)
+        usuario = Usuario.objects.get(username='ceciga')
+        serializer.save(publicado_por=usuario)
 
-
-class AnuncioDetalleGenericView(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    GenericAPIView
-):
+#muestra,actualiza o destruye un anuncio
+class AnuncioDetalleGenericView(RetrieveUpdateDestroyAPIView):
     queryset = Anuncio.objects.all()
     serializer_class = AnuncioSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
 ##################################### vistas con ViewSet para categoria y anuncio
 
