@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Categoria, Anuncio
+from django.utils import timezone
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +11,18 @@ class CategoriaSerializer(serializers.ModelSerializer):
         'activa',
         ]
 
+    def validate_nombre(self, value):
+
+        # Verificar que el nombre no contegna la palabra "categoría"
+        if "categoria" in value.lower():
+            raise serializers.ValidationError("El nombre no puede contener la palabra 'categoria'.")
+        return value
+
+    def validate(self, data):
+        if 'principal' in data['nombre'].lower() and not data['activa']:
+            raise serializers.ValidationError("No se puede desactivar la Categoria principal")
+
+        return data
 
 class AnuncioSerializer(serializers.ModelSerializer):
     #obtengo la lista de categorias del anuncio
@@ -92,3 +105,26 @@ class AnuncioSerializer(serializers.ModelSerializer):
             instance.categorias.set(categoras_obj)
 
         return instance
+
+    def validate_fecha_inicio(self, fecha_inicio):
+        fecha_actual = timezone.now()
+
+        if fecha_inicio < fecha_actual:
+            raise serializers.ValidationError("La fecha de inicio debe ser posterior a la fecha actual")
+
+        return fecha_inicio
+
+    def validate(self, data):
+        fecha_fin=data.get('fecha_fin')
+        fecha_inicio = data.get('fecha_inicio')
+
+        if fecha_fin < fecha_inicio:
+            raise serializers.ValidationError("La fecha de finalizacion debe debe ser posterior a la fecha de inicio")
+
+        return data
+
+    def validate_precio_inicial(self, precio_inicial):
+        if precio_inicial < 0:
+            raise serializers.ValidationError("el precio inicial debe ser positivo")
+
+        return precio_inicial
