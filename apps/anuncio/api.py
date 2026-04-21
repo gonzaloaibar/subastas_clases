@@ -184,5 +184,6 @@ class AnuncioViewSet(viewsets.ModelViewSet):
             "minutos": minutos
         })
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = AnuncioFilter
+    ordering_fields = ['nombre', 'activa', 'precio_inicial', 'fecha_fin']
