@@ -1,18 +1,17 @@
 from django.http import Http404
-from rest_framework import status
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from apps.anuncio.filters import AnuncioFilter
 from apps.anuncio.models import Categoria, Anuncio
 from apps.usuario.models import Usuario #para forzar el usuario al agregar (POST) un nuevo anuncio
 from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer
-from rest_framework import viewsets
 from django.utils import timezone
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets, filters
+from rest_framework.generics import (
+get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+)
 
 
 #vista para obtener las categorias y agregar una categoria
@@ -99,10 +98,6 @@ class AnuncioDetalleAPIView(APIView):
 
 
 ##################################### vistas genericas para categoria y anuncio
-
-from rest_framework.generics import (
-get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
-)
 
 #vistas genericas para anuncio y categoria
 class CategoriaListaGenericView(ListCreateAPIView):
