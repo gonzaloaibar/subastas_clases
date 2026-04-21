@@ -1,7 +1,7 @@
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from apps.anuncio.filters import AnuncioFilter
+from apps.anuncio.filters import AnuncioFilter, OfertaAnuncioFilter
 from apps.anuncio.models import Categoria, Anuncio, OfertaAnuncio
 from apps.usuario.models import Usuario #para forzar el usuario al agregar (POST) un nuevo anuncio
 from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer, OfertaAnuncioSerializer
@@ -191,3 +191,8 @@ class OfertaAnuncioViewSet(viewsets.ModelViewSet):
         user = Usuario.objects.get(id=1)
         serializer.save(usuario=user)
 
+    #filtros
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = OfertaAnuncioFilter
+    #orden de las listas
+    ordering_fields = ['precio_oferta']

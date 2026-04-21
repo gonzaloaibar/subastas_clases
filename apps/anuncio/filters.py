@@ -17,3 +17,13 @@ class AnuncioFilter(filters.FilterSet):
     #filtrar por rango de fecha de finalizacion
     fecha_fin_min = filters.DateFilter(field_name='fecha_fin', lookup_expr='gte')
     fecha_fin_max = filters.DateFilter(field_name='fecha_fin', lookup_expr='lte')
+
+
+class OfertaAnuncioFilter(filters.FilterSet):
+
+    #filtro segun anuncio
+    anuncio_nombre=filters.CharFilter(field_name='anuncio__titulo', lookup_expr='icontains')
+
+    #filtro segun rango de fechas fecha de oferta
+    fecha_oferta_min=filters.DateFilter(field_name='fecha_oferta', lookup_expr='gte')
+    fecha_oferta_max=filters.DateFilter(field_name='fecha_oferta', lookup_expr='lte')
