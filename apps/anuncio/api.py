@@ -3,15 +3,16 @@ from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from apps.anuncio.filters import AnuncioFilter
 from apps.anuncio.models import Categoria, Anuncio
 from apps.usuario.models import Usuario #para forzar el usuario al agregar (POST) un nuevo anuncio
 from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer
 from rest_framework import viewsets
-from rest_framework import mixins
-from rest_framework.generics import GenericAPIView
 from django.utils import timezone
 from rest_framework.decorators import action
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets, filters
 
 
 #vista para obtener las categorias y agregar una categoria
@@ -126,13 +127,17 @@ class AnuncioDetalleGenericView(RetrieveUpdateDestroyAPIView):
     queryset = Anuncio.objects.all()
     serializer_class = AnuncioSerializer
 
-##################################### vistas con ViewSet para categoria y anuncio
 
+#vista con viewset para categoria
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
 
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['nombre', 'activa']
+    ordering_fields = ['nombre', 'activa']
 
+#vista con viewset para Anuncio
 class AnuncioViewSet(viewsets.ModelViewSet):
     queryset = Anuncio.objects.all()#consulta a la db
     serializer_class = AnuncioSerializer#indico el serializador que debe usar
@@ -178,3 +183,6 @@ class AnuncioViewSet(viewsets.ModelViewSet):
             "horas": horas,
             "minutos": minutos
         })
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AnuncioFilter
