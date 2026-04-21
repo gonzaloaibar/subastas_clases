@@ -2,9 +2,9 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from apps.anuncio.filters import AnuncioFilter
-from apps.anuncio.models import Categoria, Anuncio
+from apps.anuncio.models import Categoria, Anuncio, OfertaAnuncio
 from apps.usuario.models import Usuario #para forzar el usuario al agregar (POST) un nuevo anuncio
-from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer
+from apps.anuncio.serializers import CategoriaSerializer, AnuncioSerializer, OfertaAnuncioSerializer
 from django.utils import timezone
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
@@ -182,3 +182,12 @@ class AnuncioViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = AnuncioFilter
     ordering_fields = ['nombre', 'activa', 'precio_inicial', 'fecha_fin']
+
+class OfertaAnuncioViewSet(viewsets.ModelViewSet):
+    queryset = OfertaAnuncio.objects.all()
+    serializer_class = OfertaAnuncioSerializer
+
+    def perform_create(self, serializer):
+        user = Usuario.objects.get(id=1)
+        serializer.save(usuario=user)
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Categoria, Anuncio
+from .models import Categoria, Anuncio, OfertaAnuncio
 from django.utils import timezone
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -128,3 +128,36 @@ class AnuncioSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("el precio inicial debe ser positivo")
 
         return precio_inicial
+
+
+class OfertaAnuncioSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OfertaAnuncio
+        fields = [
+        'id',
+        'anuncio',
+        'fecha_oferta',
+        'precio_oferta',
+        'es_ganador',
+        'usuario',
+        ]
+        read_only_fields = ['usuario']
+
+    #valido que el precio sea mayor a cero
+    def validate_precio_oferta(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("El precio debe ser mayor a 0")
+        return value
+
+    #valido que el presio supere el precio_inicial del anuncio
+    def validate(self, data):
+        anuncio = data['anuncio']
+        precio = data['precio_oferta']
+
+        if precio <= anuncio.precio_inicial:  # o precio_actual
+            raise serializers.ValidationError(
+                "La oferta debe superar el precio base"
+            )
+
+        return data
