@@ -32,7 +32,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
         write_only=True,#indico que solo se usa para entradas PATCH/POST
     )
 
-    categorias_detalle = serializers.SerializerMethodField() #para salida, Rebuscado, llama al metodo get_categorias_detalle
+    categorias_detalle = serializers.SerializerMethodField() #para salida, llama al metodo get_categorias_detalle
 
     class Meta:
         model = Anuncio
@@ -52,7 +52,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['publicado_por', 'oferta_ganadora']
 
-    #recorre las categorias y las transforma a JSON
+    #recorre las categorias y las transforma a JSON para mostrarlas en categorias_detalle
     def get_categorias_detalle(self, obj):
         return [
             {"id": cat.id, "nombre": cat.nombre}
@@ -66,7 +66,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
         usuario = validated_data.pop('publicado_por',None)
 
         #creo un anuncio
-        anuncio = Anuncio.objects.create(publicado_por=usuario,**validated_data)
+        anuncio = Anuncio.objects.create(publicado_por=usuario,**validated_data)#indico el usuario y paso los otros argumentos
 
         lista_categorias = []
 
