@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Categoria, Anuncio, OfertaAnuncio
 from django.utils import timezone
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -152,12 +154,24 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
 
     #valido que el presio supere el precio_inicial del anuncio
     def validate(self, data):
-        anuncio = data['anuncio']
-        precio = data['precio_oferta']
+        anuncio = data.get('anuncio')
+        precio = data.get('precio_oferta')
 
-        if precio <= anuncio.precio_inicial:  # o precio_actual
-            raise serializers.ValidationError(
-                "La oferta debe superar el precio base"
-            )
+        if anuncio and precio and precio <= anuncio.precio_inicial:
+            raise serializers.ValidationError({
+                "precio_oferta": "La oferta debe ser mayor al precio base"
+            })
+
+        if self.instance:
+            for attr, value in data.items():
+                setattr(self.instance, attr, value)
+            instance = self.instance
+        else:
+            instance = OfertaAnuncio(**data)
+
+        try:
+            instance.clean()
+        except DjangoValidationError as e:
+            raise DRFValidationError(e.messages)
 
         return data
