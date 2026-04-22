@@ -143,4 +143,5 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning', #ESpecifica que la version vendra como una consulta
     'VERSION_PARAM':'version',
     'ALLOWED_VERSIONS':['1','2'], #versiones alojadas
+    'VERSION_PARAM': 'X-API-Version',
 }
