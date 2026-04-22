@@ -126,7 +126,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
         return data
 
     def validate_precio_inicial(self, precio_inicial):
-        if precio_inicial < 0:
+        if precio_inicial <= 0:
             raise serializers.ValidationError("el precio inicial debe ser positivo")
 
         return precio_inicial
@@ -157,7 +157,8 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
         anuncio = data.get('anuncio')
         precio = data.get('precio_oferta')
 
-        if anuncio and precio and precio <= anuncio.precio_inicial:
+        #if anuncio and precio and precio <= anuncio.precio_inicial:
+        if precio <= anuncio.precio_inicial:
             raise serializers.ValidationError({
                 "precio_oferta": "La oferta debe ser mayor al precio base"
             })
