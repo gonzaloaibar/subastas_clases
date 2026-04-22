@@ -29,7 +29,7 @@ class CategoriaSerializer(serializers.ModelSerializer):
 class AnuncioSerializer(serializers.ModelSerializer):
     #obtengo la lista de categorias del anuncio
     categorias = serializers.ListField(
-        child=serializers.DictField(),#DictField me devuelve cada elemento {'nombre':'valor'}
+        child=serializers.DictField(),
         required=False,#le indico que no es necesario en caso de PATCH
         write_only=True,#indico que solo se usa para entradas PATCH/POST
     )
@@ -120,8 +120,9 @@ class AnuncioSerializer(serializers.ModelSerializer):
         fecha_fin=data.get('fecha_fin')
         fecha_inicio = data.get('fecha_inicio')
 
-        if fecha_fin < fecha_inicio:
-            raise serializers.ValidationError("La fecha de finalizacion debe debe ser posterior a la fecha de inicio")
+        if fecha_fin is not None and fecha_inicio is not None:
+            if fecha_fin < fecha_inicio:
+                raise serializers.ValidationError("La fecha de finalizacion debe debe ser posterior a la fecha de inicio")
 
         return data
 
@@ -157,7 +158,7 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
         anuncio = data.get('anuncio')
         precio = data.get('precio_oferta')
 
-        if anuncio and precio and precio <= anuncio.precio_inicial:
+        if anuncio and precio <= anuncio.precio_inicial:
             raise serializers.ValidationError({
                 "precio_oferta": "La oferta debe ser mayor al precio base"
             })

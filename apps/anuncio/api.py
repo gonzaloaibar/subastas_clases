@@ -185,7 +185,7 @@ class AnuncioViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = AnuncioFilter
-    ordering_fields = ['nombre', 'activa', 'precio_inicial', 'fecha_fin']
+    ordering_fields = ['titulo', 'activo', 'precio_inicial', 'fecha_fin']
 
 class OfertaAnuncioViewSet(viewsets.ModelViewSet):
     queryset = OfertaAnuncio.objects.all()
