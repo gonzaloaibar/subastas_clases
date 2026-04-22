@@ -141,7 +141,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 2,
 
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning', #ESpecifica que la version vendra como una consulta
-    'DEFAULT_VERSION': '2.0',
+    'DEFAULT_VERSION': '1',
     'VERSION_PARAM':'version',
     'ALLOWED_VERSIONS':['1','2'], #versiones alojadas
 }
