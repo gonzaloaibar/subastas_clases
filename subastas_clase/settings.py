@@ -138,5 +138,9 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2
+    'PAGE_SIZE': 2,
+
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning', #ESpecifica que la version vendra como una consulta
+    'VERSION_PARAM':'version',
+    'ALLOWED_VERSIONS':['1','2'], #versiones alojadas
 }

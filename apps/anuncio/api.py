@@ -18,9 +18,13 @@ get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 class CategoriaListaAPIView(APIView):
 
     def get(self, request, format=None):
-        categorias = Categoria.objects.all()
-        serializer = CategoriaSerializer(categorias, many=True)
-        return Response(serializer.data)
+
+        if request.version == '1':
+            categorias = Categoria.objects.all()
+            serializer = CategoriaSerializer(categorias, many=True)
+            return Response(serializer.data)
+        elif request.version == '2':
+            return Response({"version":"estas en la version 2"},status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         serializer = CategoriaSerializer(data=request.data)
