@@ -111,8 +111,8 @@ class AnuncioSerializer(serializers.ModelSerializer):
     def validate_fecha_inicio(self, fecha_inicio):
         fecha_actual = timezone.now()
 
-        if fecha_inicio < fecha_actual:
-            raise serializers.ValidationError("La fecha de inicio debe ser posterior a la fecha actual")
+        if fecha_inicio > fecha_actual:
+            raise serializers.ValidationError("La fecha de inicio NO debe ser posterior a la fecha actual")
 
         return fecha_inicio
 
