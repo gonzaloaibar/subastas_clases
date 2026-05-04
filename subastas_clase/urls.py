@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from subastas_clase.router import router #tuve que importar router
 
@@ -24,4 +25,6 @@ urlpatterns = [
     path('', include('apps.anuncio.urls', namespace='anuncio')),
     path('view-set/', include(router.urls)), #traje directamente lar urls del router
     #path('view-set/', include('subastas_clase.router')),
+    path('api/token/', TokenObtainPairView.as_view()),
+    path('api/token/refresh/', TokenRefreshView.as_view()),
 ]
