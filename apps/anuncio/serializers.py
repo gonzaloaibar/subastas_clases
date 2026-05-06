@@ -65,10 +65,8 @@ class AnuncioSerializer(serializers.ModelSerializer):
         #traigo la lista de categorias que existen
         categorias_data = validated_data.pop('categorias',[])
 
-        usuario = validated_data.pop('publicado_por',None)
-
         #creo un anuncio
-        anuncio = Anuncio.objects.create(publicado_por=usuario,**validated_data)#indico el usuario y paso los otros argumentos
+        anuncio = Anuncio.objects.create(**validated_data)#indico el usuario y paso los otros argumentos
 
         lista_categorias = []
 

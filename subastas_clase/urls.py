@@ -27,4 +27,6 @@ urlpatterns = [
     #path('view-set/', include('subastas_clase.router')),
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
+
+    path('api-auth/', include('rest_framework.urls')),#para logear usuario en la interfaz Browsable API
 ]

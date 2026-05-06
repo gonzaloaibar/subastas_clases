@@ -152,7 +152,17 @@ REST_FRAMEWORK = {
     'VERSION_PARAM':'version',
     'ALLOWED_VERSIONS':['1','2'], #versiones alojadas
 
+
+    #Configuracion global para la autenticacion
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #configuracion para agregar el login el la interfaz del navegador
+        'rest_framework.authentication.SessionAuthentication',
     ],
+
+    #configuracion global para la autorizacion
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions',#deja ver cualquier anuncio si estas logeado, se debe controlar explícitamente los permisos con una clase que extienda de DjangoModelPermissions
+    ]
 }
