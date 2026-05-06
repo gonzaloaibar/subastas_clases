@@ -136,6 +136,9 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     filterset_fields = ['nombre', 'activa']
     ordering_fields = ['nombre', 'activa']
 
+
+#
+
 #vista con viewset para Anuncio
 class AnuncioViewSet(viewsets.ModelViewSet):
     queryset = Anuncio.objects.all()#consulta a la db
@@ -191,8 +194,7 @@ class OfertaAnuncioViewSet(viewsets.ModelViewSet):
     serializer_class = OfertaAnuncioSerializer
 
     def perform_create(self, serializer):
-        user = Usuario.objects.get(id=1)
-        serializer.save(usuario=user)
+        serializer.save(usuario=self.request.user)
 
     #filtros
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]

@@ -173,4 +173,23 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
         except DjangoValidationError as e:
             raise DRFValidationError(e.messages)
 
+        request = self.context['request']
+        user = request.user
+
+        # validar que no se oferte por un anuncio propio y que el anuncio este activo
+
+        if anuncio and anuncio.publicado_por == user:
+            raise serializers.ValidationError(
+                "No podés ofertar en tu propio anuncio"
+            )
+
+        if anuncio and not anuncio.activo:
+            raise serializers.ValidationError(
+                "El anuncio no está activo"
+            )
+
         return data
+
+
+
+

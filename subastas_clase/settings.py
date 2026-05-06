@@ -163,6 +163,6 @@ REST_FRAMEWORK = {
     #configuracion global para la autorizacion
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.DjangoModelPermissions',#deja ver cualquier anuncio si estas logeado, se debe controlar explícitamente los permisos con una clase que extienda de DjangoModelPermissions
+        'rest_framework.permissions.DjangoModelPermissions',#deja ver cualquier anuncio si estas logeado, se debe controlar explícitamente los permisos para evitar que un usuario pueda ver un anuncio que no es suyo
     ]
 }
