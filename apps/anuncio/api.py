@@ -12,7 +12,19 @@ from rest_framework import status, viewsets, filters
 from rest_framework.generics import (
 get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 )
+from rest_framework.permissions import BasePermission
 
+
+######################
+class PropietarioPermisos(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+
+        if request.method == 'GET': #el metodo GET debe estar habilitado para cualquier usuario logueado
+            return True
+
+        return obj.publicado_por == request.user
+######################
 
 #vista para obtener las categorias y agregar una categoria
 class CategoriaListaAPIView(APIView):
@@ -88,7 +100,6 @@ class AnuncioDetalleAPIView(APIView):
 
     def delete(self, request, pk, format=None):
         anuncio = get_object_or_404(Anuncio, pk=pk)
-        anuncio.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, pk, format=None):
@@ -118,8 +129,7 @@ class AnuncioListaGenericView(ListCreateAPIView):
 
     '''este metodo hace que no necesite agregar un usaurio manualmente'''
     def perform_create(self, serializer):
-        usuario = Usuario.objects.get(username='ceciga')
-        serializer.save(publicado_por=usuario)
+        serializer.save(publicado_por=self.request.user)
 
 #muestra,actualiza o destruye un anuncio
 class AnuncioDetalleGenericView(RetrieveUpdateDestroyAPIView):
@@ -136,15 +146,22 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     filterset_fields = ['nombre', 'activa']
     ordering_fields = ['nombre', 'activa']
 
+
+#
+
 #vista con viewset para Anuncio
 class AnuncioViewSet(viewsets.ModelViewSet):
+    ###############
+    permission_classes = [
+        PropietarioPermisos
+    ]
+    #######################
     queryset = Anuncio.objects.all()#consulta a la db
     serializer_class = AnuncioSerializer#indico el serializador que debe usar
 
     #sobrescribo el metodo perform_create de ModelViewSet para forzar el usuario
     def perform_create(self, serializer):
-        user = Usuario.objects.get(id=1)
-        serializer.save(publicado_por=user)
+        serializer.save(publicado_por=self.request.user)
 
     #accion personalizada
     @action(methods=['get'], detail=True)
@@ -185,6 +202,7 @@ class AnuncioViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = AnuncioFilter
+
     ordering_fields = ['titulo', 'activa', 'precio_inicial', 'fecha_fin']
 
 class OfertaAnuncioViewSet(viewsets.ModelViewSet):
@@ -192,8 +210,7 @@ class OfertaAnuncioViewSet(viewsets.ModelViewSet):
     serializer_class = OfertaAnuncioSerializer
 
     def perform_create(self, serializer):
-        user = Usuario.objects.get(id=1)
-        serializer.save(usuario=user)
+        serializer.save(usuario=self.request.user)
 
     #filtros
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]

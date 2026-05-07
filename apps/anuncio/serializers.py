@@ -29,7 +29,7 @@ class CategoriaSerializer(serializers.ModelSerializer):
 class AnuncioSerializer(serializers.ModelSerializer):
     #obtengo la lista de categorias del anuncio
     categorias = serializers.ListField(
-        child=serializers.DictField(),#DictField me devuelve cada elemento {'nombre':'valor'}
+        child=serializers.DictField(),
         required=False,#le indico que no es necesario en caso de PATCH
         write_only=True,#indico que solo se usa para entradas PATCH/POST
     )
@@ -65,10 +65,8 @@ class AnuncioSerializer(serializers.ModelSerializer):
         #traigo la lista de categorias que existen
         categorias_data = validated_data.pop('categorias',[])
 
-        usuario = validated_data.pop('publicado_por',None)
-
         #creo un anuncio
-        anuncio = Anuncio.objects.create(publicado_por=usuario,**validated_data)#indico el usuario y paso los otros argumentos
+        anuncio = Anuncio.objects.create(**validated_data)#indico el usuario y paso los otros argumentos
 
         lista_categorias = []
 
@@ -120,8 +118,9 @@ class AnuncioSerializer(serializers.ModelSerializer):
         fecha_fin=data.get('fecha_fin')
         fecha_inicio = data.get('fecha_inicio')
 
-        if fecha_fin < fecha_inicio:
-            raise serializers.ValidationError("La fecha de finalizacion debe debe ser posterior a la fecha de inicio")
+        if fecha_fin is not None and fecha_inicio is not None:
+            if fecha_fin < fecha_inicio:
+                raise serializers.ValidationError("La fecha de finalizacion debe debe ser posterior a la fecha de inicio")
 
         return data
 
@@ -157,8 +156,8 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
         anuncio = data.get('anuncio')
         precio = data.get('precio_oferta')
 
-        #if anuncio and precio and precio <= anuncio.precio_inicial:
-        if precio <= anuncio.precio_inicial:
+        if anuncio and precio <= anuncio.precio_inicial:
+
             raise serializers.ValidationError({
                 "precio_oferta": "La oferta debe ser mayor al precio base"
             })
@@ -175,4 +174,23 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
         except DjangoValidationError as e:
             raise DRFValidationError(e.messages)
 
+        request = self.context['request']
+        user = request.user
+
+        # validar que no se oferte por un anuncio propio y que el anuncio este activo
+
+        if anuncio and anuncio.publicado_por == user:
+            raise serializers.ValidationError(
+                "No podés ofertar en tu propio anuncio"
+            )
+
+        if anuncio and not anuncio.activo:
+            raise serializers.ValidationError(
+                "El anuncio no está activo"
+            )
+
         return data
+
+
+
+

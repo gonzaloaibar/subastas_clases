@@ -22,6 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ogj^q#mk!a9y20w9yh$&ch2xz($n_aprls6-czdvus0hgfbri2'
 
+SIMPLE_JWT = {
+
+    'SIGNING_KEY': SECRET_KEY, # Presente por defecto en settings
+    'ALGORITHM': 'HS256', # Algoritmo de firmas
+}
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -41,6 +47,7 @@ INSTALLED_APPS = [
     'apps.anuncio',
     'rest_framework',
     'django_filters',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -144,4 +151,18 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSION': '1',
     'VERSION_PARAM':'version',
     'ALLOWED_VERSIONS':['1','2'], #versiones alojadas
+
+
+    #Configuracion global para la autenticacion
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #configuracion para agregar el login el la interfaz del navegador
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+
+    #configuracion global para la autorizacion
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions',#deja ver cualquier anuncio si estas logeado, se debe controlar explícitamente los permisos para evitar que un usuario pueda ver un anuncio que no es suyo
+    ]
 }
