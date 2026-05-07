@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-
+from uuid import uuid4
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -12,6 +12,7 @@ class Categoria(models.Model):
 
 
 class Anuncio(models.Model):
+    uuid = models.UUIDField(default=uuid4,editable=False,unique=True)
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
     precio_inicial = models.DecimalField(decimal_places=2, max_digits=10)
