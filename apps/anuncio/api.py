@@ -12,7 +12,7 @@ from rest_framework import status, viewsets, filters
 from rest_framework.generics import (
 get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 )
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
 
 
 ######################
@@ -149,15 +149,16 @@ class CategoriaViewSet(viewsets.ModelViewSet):
 
 #vista con viewset para Anuncio
 class AnuncioViewSet(viewsets.ModelViewSet):
-    ###############
+
     permission_classes = [
-        PropietarioPermisos
+        PropietarioPermisos, IsAuthenticatedOrReadOnly
     ]
-    #######################
+
     queryset = Anuncio.objects.all()#consulta a la db
+    lookup_field = 'uuid'
     serializer_class = AnuncioSerializer#indico el serializador que debe usar
 
-    #sobrescribo el metodo perform_create de ModelViewSet para forzar el usuario
+
     def perform_create(self, serializer):
         serializer.save(publicado_por=self.request.user)
 

@@ -39,7 +39,7 @@ class AnuncioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Anuncio
         fields = [
-        'id',
+        'uuid',
         'titulo',
         'descripcion',
         'precio_inicial',
