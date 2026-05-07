@@ -12,7 +12,19 @@ from rest_framework import status, viewsets, filters
 from rest_framework.generics import (
 get_object_or_404, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 )
+from rest_framework.permissions import BasePermission
 
+
+######################
+class PropietarioPermisos(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+
+        if request.method == 'GET': #el metodo GET debe estar habilitado para cualquier usuario logueado
+            return True
+
+        return obj.publicado_por == request.user
+######################
 
 #vista para obtener las categorias y agregar una categoria
 class CategoriaListaAPIView(APIView):
@@ -118,8 +130,7 @@ class AnuncioListaGenericView(ListCreateAPIView):
 
     '''este metodo hace que no necesite agregar un usaurio manualmente'''
     def perform_create(self, serializer):
-        usuario = Usuario.objects.get(username='ceciga')
-        serializer.save(publicado_por=usuario)
+        serializer.save(publicado_por=self.request.user)
 
 #muestra,actualiza o destruye un anuncio
 class AnuncioDetalleGenericView(RetrieveUpdateDestroyAPIView):
@@ -136,11 +147,13 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     filterset_fields = ['nombre', 'activa']
     ordering_fields = ['nombre', 'activa']
 
-
-#
-
 #vista con viewset para Anuncio
 class AnuncioViewSet(viewsets.ModelViewSet):
+    ###############
+    permission_classes = [
+        PropietarioPermisos
+    ]
+    #######################
     queryset = Anuncio.objects.all()#consulta a la db
     serializer_class = AnuncioSerializer#indico el serializador que debe usar
 
