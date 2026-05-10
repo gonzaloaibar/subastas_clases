@@ -151,15 +151,24 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("El precio debe ser mayor a 0")
         return value
 
-    #valido que el presio supere el precio_inicial del anuncio
+    #valido que el precio supere el precio_inicial del anuncio
     def validate(self, data):
         anuncio = data.get('anuncio')
-        precio = data.get('precio_oferta')
 
-        if anuncio and precio <= anuncio.precio_inicial:
+        # Obtener el usuario autenticado
+        request = self.context['request']
+        user = request.user
 
+        # No permitir ofertar sobre un anuncio propio
+        if anuncio and anuncio.publicado_por == user:
             raise serializers.ValidationError({
-                "precio_oferta": "La oferta debe ser mayor al precio base"
+                "anuncio": "No podés ofertar en tu propio anuncio."
+            })
+
+        # Verificar que el anuncio esté activo
+        if anuncio and not anuncio.activo:
+            raise serializers.ValidationError({
+                "anuncio": "El anuncio no está activo."
             })
 
         if self.instance:
@@ -168,25 +177,10 @@ class OfertaAnuncioSerializer(serializers.ModelSerializer):
             instance = self.instance
         else:
             instance = OfertaAnuncio(**data)
-
         try:
             instance.clean()
         except DjangoValidationError as e:
-            raise DRFValidationError(e.messages)
-
-        request = self.context['request']
-        user = request.user
-
-        # validar que no se oferte por un anuncio propio y que el anuncio este activo
-
-        if anuncio and anuncio.publicado_por == user:
-            raise serializers.ValidationError(
-                "No podés ofertar en tu propio anuncio"
-            )
-
-        if anuncio and not anuncio.activo:
-            raise serializers.ValidationError(
-                "El anuncio no está activo"
-            )
+            raise DRFValidationError(e.message_dict if hasattr(e, 'message_dict') else e.messages)
 
         return data
+
