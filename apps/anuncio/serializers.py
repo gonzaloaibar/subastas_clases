@@ -3,6 +3,7 @@ from .models import Categoria, Anuncio, OfertaAnuncio
 from django.utils import timezone
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework.exceptions import ValidationError as DRFValidationError
+from apps.anuncio.exchange_service import convertir_moneda #importo el metodo del servicio
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,6 +37,10 @@ class AnuncioSerializer(serializers.ModelSerializer):
 
     categorias_detalle = serializers.SerializerMethodField() #para salida, llama al metodo get_categorias_detalle
 
+    precio_USD = serializers.SerializerMethodField()
+
+    precio_EUR = serializers.SerializerMethodField()
+
     class Meta:
         model = Anuncio
         fields = [
@@ -43,6 +48,8 @@ class AnuncioSerializer(serializers.ModelSerializer):
         'titulo',
         'descripcion',
         'precio_inicial',
+        'precio_USD',
+        'precio_EUR',
         'imagen',
         'fecha_inicio',
         'fecha_fin',
@@ -60,6 +67,18 @@ class AnuncioSerializer(serializers.ModelSerializer):
             {"id": cat.id, "nombre": cat.nombre}
             for cat in obj.categorias.all()
         ]
+    def get_precio_USD(self, obj):
+
+        return convertir_moneda(
+            precio_Arg=float(obj.precio_inicial),
+            moneda_de_paso="USD"
+        )
+    def get_precio_EUR(self, obj):
+
+        return convertir_moneda(
+            precio_Arg=float(obj.precio_inicial),
+            moneda_de_paso="EUR"
+        )
 
     def create(self,validated_data):
         #traigo la lista de categorias que existen

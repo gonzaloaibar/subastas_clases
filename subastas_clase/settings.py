@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -171,3 +172,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissions',#deja ver cualquier anuncio si estas logeado, se debe controlar explícitamente los permisos para evitar que un usuario pueda ver un anuncio que no es suyo
     ]
 }
+
+EXCHANGE_API_KEY = config('EXCHANGE_API_KEY')#configuracion de la apikey del servicio

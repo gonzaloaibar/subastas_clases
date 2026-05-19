@@ -6,3 +6,5 @@ djangorestframework_simplejwt==5.5.1
 pip==24.0
 PyJWT==2.12.1
 sqlparse==0.5.5
+requests==2.34.1
+python-decouple==3.8
