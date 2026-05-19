@@ -20,6 +20,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from subastas_clase.router import router #tuve que importar router
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.anuncio.urls', namespace='anuncio')),
@@ -29,4 +31,10 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view()),
 
     path('api-auth/', include('rest_framework.urls')),#para logear usuario en la interfaz Browsable API
+
+    # Ruta para generar el esquema OpenAPI
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Documentación Swagger interactiva
+    path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+   
 ]

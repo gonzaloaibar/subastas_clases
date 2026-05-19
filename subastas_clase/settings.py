@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -170,7 +171,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.DjangoModelPermissions',#deja ver cualquier anuncio si estas logeado, se debe controlar explícitamente los permisos para evitar que un usuario pueda ver un anuncio que no es suyo
-    ]
+    ],
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', #configuracion para Swagger
 }
 
 EXCHANGE_API_KEY = config('EXCHANGE_API_KEY')#configuracion de la apikey del servicio
